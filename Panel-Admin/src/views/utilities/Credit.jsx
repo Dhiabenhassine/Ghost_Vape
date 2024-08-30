@@ -31,7 +31,7 @@ const columns = [
   {
     field: 'Qte',
     headerName: 'Qte',
-    width: 200,
+    width: 100,
     editable: true,
   },
   {
@@ -90,6 +90,7 @@ export default function Vente() {
   });
   const [articles, setArticles] = useState([]);
   const [category, setCategory] = useState('');
+  const [articlePrices, setArticlePrices] = useState({});
 
   const fetchData = async () => {
     try {
@@ -107,22 +108,36 @@ export default function Vente() {
   const fetchArticles = async (category) => {
     try {
       let response;
+      let prices = {};
       switch (category) {
         case 'Divers':
           response = await axios.get('http://127.0.0.1:4000/Divers/selectAllDivers');
+          prices = response.data.reduce((acc, item) => ({
+            ...acc,
+            [item.Article]: item.PrixAchat
+          }), {});
           setArticles(response.data.map(item => ({ label: item.Article, value: item.Article })));
           break;
         case 'Vapes':
           response = await axios.get('http://127.0.0.1:4000/VapeController/selectAllVapes');
+          prices = response.data.reduce((acc, item) => ({
+            ...acc,
+            [item.NomVape]: item.PrixAchat
+          }), {});
           setArticles(response.data.map(item => ({ label: item.NomVape, value: item.NomVape })));
           break;
         case 'Liquides':
           response = await axios.get('http://127.0.0.1:4000/StockController/selectAllLiquide');
+          prices = response.data.reduce((acc, item) => ({
+            ...acc,
+            [item.NomLiquide]: item.PriceUnit
+          }), {});
           setArticles(response.data.map(item => ({ label: item.NomLiquide, value: item.NomLiquide })));
           break;
         default:
           setArticles([]);
       }
+      setArticlePrices(prices);
     } catch (err) {
       console.log(err);
     }
@@ -143,6 +158,7 @@ export default function Vente() {
     setNewCredit((prev) => ({
       ...prev,
       [name]: value,
+      PrixAchat: name === 'ArticleVendu' ? articlePrices[value] || '' : prev.PrixAchat,
     }));
   };
 
@@ -247,15 +263,6 @@ export default function Vente() {
             sx={{ mb: 1 }}
           />
           <TextField
-            label="Prix Achat"
-            name="PrixAchat"
-            value={newCredit.PrixAchat}
-            onChange={handleInputChange}
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 1 }}
-          />
-          <TextField
             label="Prix Vente"
             name="PrixVente"
             value={newCredit.PrixVente}
@@ -264,24 +271,26 @@ export default function Vente() {
             fullWidth
             sx={{ mb: 1 }}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenModal(false)}>Cancel</Button>
-          <Button onClick={insertFlacon} variant="contained" color="primary">Add</Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog open={openModalAvance} onClose={() => setOpenModalAvance(false)}>
-        <DialogTitle>Insert Avance</DialogTitle>
-        <DialogContent>
           <TextField
-            label="ID Credit"
-            name="ID_Credit"
-            value={newAvance.ID_Credit}
-           // onChange={handleAvanceInputChange}
+            label="Prix Achat"
+            name="PrixAchat"
+            value={newCredit.PrixAchat}
+            onChange={handleInputChange}
             variant="outlined"
             fullWidth
             sx={{ mb: 1 }}
+            disabled
           />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenModal(false)} color="primary">Cancel</Button>
+          <Button onClick={insertFlacon} color="primary">Add</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={openModalAvance} onClose={() => setOpenModalAvance(false)}>
+        <DialogTitle>Add Avance</DialogTitle>
+        <DialogContent>
           <TextField
             label="Avance"
             name="Avance"
@@ -293,25 +302,17 @@ export default function Vente() {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenModalAvance(false)}>Cancel</Button>
-          <Button onClick={insertAvance} variant="contained" color="primary">Add</Button>
+          <Button onClick={() => setOpenModalAvance(false)} color="primary">Cancel</Button>
+          <Button onClick={insertAvance} color="primary">Add</Button>
         </DialogActions>
       </Dialog>
+
       <DataGrid
         rows={rows}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 10,
-            },
-          },
-        }}
-        pageSizeOptions={[5]}
-        checkboxSelection
-        disableRowSelectionOnClick
+        pageSize={10}
+        rowsPerPageOptions={[10]}
         onRowClick={handleRowClick}
-        sx={{ marginTop: '2%' }}
       />
     </Box>
   );

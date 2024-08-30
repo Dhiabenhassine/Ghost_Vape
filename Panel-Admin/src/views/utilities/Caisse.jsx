@@ -10,10 +10,6 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import FormControl from '@mui/material/FormControl';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import InputLabel from '@mui/material/InputLabel';
 
 const columns = [
   {
@@ -36,13 +32,13 @@ const columns = [
   },
   {
     field: 'Ventesupposer',
-    headerName: 'Vente suposer',
+    headerName: 'Vente supposer',
     width: 200,
     editable: true,
   },
   {
-    field: 'Masrouf',
-    headerName: 'Masrouf',
+    field: 'Depense',
+    headerName: 'Depense',
     width: 200,
     editable: true,
   },
@@ -59,14 +55,23 @@ export default function Vente() {
   const [rows, setRows] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [openModalCaisse, setOpenModalCaisse] = useState(false);
-
+  const [totalSales, setTotalSales] = useState(0); // State to store total sales
   const [newCaisse, setNewCaisse] = useState({
     CaisseDebut: ''
   });
   const [newCaisseFin, setNewCaisseFin] = useState({
-    ID_Caisee: '', CaisseFin: ''
+    ID_Caisee: '', CaisseFin: '', Depense: ''
   });
- 
+  
+  // Fetch total sales data from backend
+  const fetchTotalSales = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/Caisse/VenteSuposer');
+      setTotalSales(response.data || 0);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -74,6 +79,7 @@ export default function Vente() {
       const data = response.data.map((row, index) => ({
         ...row,
         id: row.ID_Caisse || `id-${index}`,
+        Ventesupposer: totalSales.find(ts => ts.created_at === row.Created_at)?.NetSales || 0
       }));
       setRows(data);
     } catch (err) {
@@ -81,13 +87,10 @@ export default function Vente() {
     }
   };
 
-
-
   useEffect(() => {
+    fetchTotalSales(); 
     fetchData();
-  }, []);
-
-
+  }, [totalSales]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -109,7 +112,8 @@ export default function Vente() {
     try {
       const { CaisseDebut } = newCaisse;
       await axios.post('http://127.0.0.1:4000/Caisse/insertCaisse', {
-        CaisseDebut      });
+        CaisseDebut
+      });
       setOpenModal(false);
       fetchData();
     } catch (err) {
@@ -119,10 +123,15 @@ export default function Vente() {
 
   const updateCaisse = async () => {
     try {
-      const { ID_Caisee, CaisseFin } = newCaisseFin;
+      const { ID_Caisee, CaisseFin, Depense } = newCaisseFin;
       await axios.post('http://127.0.0.1:4000/Caisse/updateCaisse', {
         ID_Caisee, CaisseFin
       });
+      if (Depense) {
+        await axios.post('http://127.0.0.1:4000/Caisse/depense', {
+          ID_Caisee, Depense: Depense
+        });
+      }
       setOpenModalCaisse(false);
       fetchData();
     } catch (err) {
@@ -131,36 +140,39 @@ export default function Vente() {
   };
 
   const handleRowClick = (params) => {
-    setNewCaisseFin({ ID_Caisee: params.row.ID_Caisee, CaisseFin: '' });
+    setNewCaisseFin({ 
+      ID_Caisee: params.row.ID_Caisee, 
+      CaisseFin: params.row.CaisseFin, // Populate CaisseFin as well
+      Depense: ''
+    });
     setOpenModalCaisse(true);
   };
 
   return (
-    <Box sx={{ height: 700, width: '90%',marginLeft:'5%', background: 'white', marginTop: '3%' }}>
+    <Box sx={{ height: 700, width: '90%', marginLeft: '5%', background: 'white', marginTop: '3%' }}>
       <Box>
         <AddIcon sx={{ cursor: 'pointer', marginLeft: '3%', marginTop: '2%' }} onClick={() => setOpenModal(true)} />
       </Box>
-     
+
       <Dialog open={openModal} onClose={() => setOpenModal(false)}>
         <DialogTitle> Fond de Caisse</DialogTitle>
         <DialogContent>
           <TextField
             label="Fond de Caisse"
             name="CaisseDebut"
-            value={newCaisse.Nom}
+            value={newCaisse.CaisseDebut}
             onChange={handleInputChange}
             variant="outlined"
             fullWidth
             sx={{ mb: 1 }}
           />
-        
-      
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenModal(false)}>Cancel</Button>
           <Button onClick={insertCaisse} variant="contained" color="primary">Add</Button>
         </DialogActions>
       </Dialog>
+
       <Dialog open={openModalCaisse} onClose={() => setOpenModalCaisse(false)}>
         <DialogTitle> Caisse Fin De Jour</DialogTitle>
         <DialogContent>
@@ -170,25 +182,38 @@ export default function Vente() {
             value={newCaisseFin.ID_Caisee}
             variant="outlined"
             fullWidth
-            sx={{ mb: 1 ,marginTop:'2%'}}
+            sx={{ mb: 1, marginTop: '2%' }}
+            InputProps={{
+              readOnly: true,
+            }}
           />
-          
           <TextField
-            label="CaisseFin"
+            label="Caisse Fin"
             name="CaisseFin"
             value={newCaisseFin.CaisseFin}
+            variant="outlined"
+            fullWidth
+            sx={{ mb: 1 }}
+            InputProps={{
+              readOnly: true, // Make CaisseFin read-only
+            }}
+          />
+          <TextField
+            label="Depense"
+            name="Depense"
+            value={newCaisseFin.Depense}
             onChange={handleAvanceInputChange}
             variant="outlined"
             fullWidth
             sx={{ mb: 1 }}
           />
-        
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setOpenModalCaisse(false)}>Cancel</Button>
-          <Button onClick={updateCaisse} variant="contained" color="primary">Add</Button>
+          <Button onClick={updateCaisse} variant="contained" color="primary">Update</Button>
         </DialogActions>
       </Dialog>
+
       <DataGrid
         rows={rows}
         columns={columns}

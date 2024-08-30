@@ -82,6 +82,13 @@ router.post("/Caisse/updateCaisse", async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+router.post("/Caisse/depense", async (req, res) => {
+  try {
+    await Caisse.depense(req, res);
+  } catch (err) {
+    res.status(500).send('Server error');
+  }
+});
 router.get("/Caisse/selectCaisse", async (req, res) => {
   try {
     await Caisse.selectCaisse(req, res);
