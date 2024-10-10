@@ -95,7 +95,7 @@ export default function Vente() {
   };
 
   return (
-    <Box sx={{ height: 700, width: '80%', marginLeft: '10%', background: 'white', marginTop: '3%' }}>
+    <Box sx={{ height: 700, width: '95%', marginLeft: '3%', background: 'white', marginTop: '3%' }}>
       <Box>
         <AddIcon sx={{ cursor: 'pointer', marginLeft: '3%', marginTop: '2%' }} onClick={handleAddClick} />
       </Box>

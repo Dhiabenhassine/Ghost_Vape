@@ -25,7 +25,7 @@ const columns = [
   {
     field: 'PrixAchat',
     headerName: 'Prix Achat',
-    width: 150,
+    width: 100,
     editable: true,
   },
   {
@@ -108,7 +108,7 @@ export default function Vente() {
   );
 
   return (
-    <Box sx={{ height: 700, width: '53%', marginLeft: '15%', background: 'white', marginTop: '3%' }}>
+    <Box sx={{ height: 700, width: '53%', marginLeft: '22%', background: 'white', marginTop: '3%' }}>
       <Box component="form"
         sx={{
           display: 'flex',

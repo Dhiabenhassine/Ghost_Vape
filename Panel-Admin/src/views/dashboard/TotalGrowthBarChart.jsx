@@ -26,8 +26,8 @@ import axios from 'axios';
 ChartJS.register(ArcElement, Tooltip, Legend, Title, CategoryScale, LinearScale, PointElement, LineElement, BarElement);
 
 const status = [
-  { value: 'today', label: 'Today' },
-  { value: 'month', label: 'This Month' },
+  { value: 'today', label: 'Aujourdhui' },
+  { value: 'month', label: 'Ce Mois' },
 ];
 
 const TotalGrowthBarChart = ({ isLoading }) => {
@@ -66,7 +66,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
     responsive: true,
     plugins: {
       legend: { position: 'top' },
-      title: { display: true, text: value === 'today' ? 'Sales Today' : 'Sales This Month' },
+      title: { display: true, text: value === 'today' ? 'Sales Today' : 'vente  du mois' },
+
     },
   };
 
@@ -80,7 +81,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
             <Grid item xs={12}>
               <Grid container alignItems="center" justifyContent="space-between">
                 <Grid item>
-                  <Typography variant="h4">Sales Overview</Typography>
+                  <Typography variant="h4">Graphe de ventes</Typography>
+
                 </Grid>
                 <Grid item>
                   <TextField

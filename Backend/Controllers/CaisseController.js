@@ -69,14 +69,14 @@ const updateCaisse = async (req, res) => {
         FROM SalesDivers
         GROUP BY DATE(created_at)
       `;
-      
+  
       // Query to select expenses
       const selectDepense = `
         SELECT DATE(created_at) AS created_at, SUM(Depense) AS TotalDepense
         FROM Caisse
         GROUP BY DATE(created_at)
       `;
-      
+  
       // Execute queries
       const resultLiquide = await sequelize.query(selectVenteLiquide, { type: sequelize.QueryTypes.SELECT });
       const resultVapes = await sequelize.query(selectVenteVapes, { type: sequelize.QueryTypes.SELECT });
@@ -86,44 +86,53 @@ const updateCaisse = async (req, res) => {
       // Combine results by date
       const combinedResults = {};
   
+      // Process Liquid Sales
       resultLiquide.forEach(row => {
         const date = row.created_at;
         if (!combinedResults[date]) combinedResults[date] = { TotalSales: 0, TotalDepense: 0, created_at: date };
-        combinedResults[date].TotalSales += row.TotalSalesLiquide || 0;
+        combinedResults[date].TotalSales += parseFloat(row.TotalSalesLiquide) || 0;
       });
   
+      // Process Vapes Sales
       resultVapes.forEach(row => {
         const date = row.created_at;
         if (!combinedResults[date]) combinedResults[date] = { TotalSales: 0, TotalDepense: 0, created_at: date };
-        combinedResults[date].TotalSales += row.TotalSalesVapes || 0;
+        combinedResults[date].TotalSales += parseFloat(row.TotalSalesVapes) || 0;
       });
   
+      // Process Divers Sales
       resultDivers.forEach(row => {
         const date = row.created_at;
         if (!combinedResults[date]) combinedResults[date] = { TotalSales: 0, TotalDepense: 0, created_at: date };
-        combinedResults[date].TotalSales += row.TotalSalesDivers || 0;
+        combinedResults[date].TotalSales += parseFloat(row.TotalSalesDivers) || 0;
       });
   
+      // Process Depense (Expenses)
       resultDepense.forEach(row => {
         const date = row.created_at;
         if (!combinedResults[date]) combinedResults[date] = { TotalSales: 0, TotalDepense: 0, created_at: date };
-        combinedResults[date].TotalDepense += row.TotalDepense || 0;
+        combinedResults[date].TotalDepense += parseFloat(row.TotalDepense) || 0;
       });
   
-      // Subtract expenses from total sales for each date
+      // Debugging log to check combined results before calculating NetSales
+      console.log("Combined Results:", combinedResults);
+  
+      // Calculate NetSales for each date
       const resultArray = Object.values(combinedResults).map(row => {
         return {
           created_at: row.created_at,
-          NetSales: row.TotalSales - row.TotalDepense // Calculate net sales
+          NetSales: row.TotalSales - row.TotalDepense
         };
       });
   
       res.status(200).send(resultArray);
     } catch (err) {
-      console.error(err);
+      console.error("Error:", err);
       res.status(500).send('Error retrieving sales data');
     }
   };
+  
+  
   
   
   const depense = async (req, res) => {

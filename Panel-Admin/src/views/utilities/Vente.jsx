@@ -167,7 +167,7 @@ export default function Vente() {
   );
 
   return (
-    <Box sx={{ height: 700, width: '75%', marginLeft: '15%', background: 'white' }}>
+    <Box sx={{ height: 700, width: '95%', marginLeft: '3%', background: 'white' }}>
       <Box component="form"
         sx={{
           display: 'flex',

@@ -94,7 +94,7 @@ export default function Vente() {
   };
 
   return (
-    <Box sx={{ height: 400, width: '45%', marginLeft: '25%', background: 'white', marginTop: '3%' }}>
+    <Box sx={{ height: 400, width: '55%', marginLeft: '22%', background: 'white', marginTop: '3%' }}>
       <Box>
         <AddIcon sx={{ cursor: 'pointer' ,marginLeft:'3%',marginTop:'2%'}} onClick={() => setOpenModal(true)} />
       </Box>

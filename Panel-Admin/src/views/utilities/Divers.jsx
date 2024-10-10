@@ -21,40 +21,40 @@ const columns = [
   {
     field: 'PrixAchat',
     headerName: 'Prix Achat',
-    width: 150,
+    width: 100,
     editable: true,
   },{
     field: 'Qte',
     headerName: 'Qte',
     type: 'number',
-    width: 150,
+    width: 100,
     editable: true,
   },
   {
     field: 'PrixVente',
     headerName: 'Prix Vente',
     type: 'number',
-    width: 150,
+    width: 100,
     editable: true,
   }, {
     field: 'QteVendu',
     headerName: 'Qte Vendu',
     type: 'number',
-    width: 150,
+    width: 100,
     editable: true,
   },
   {
     field: 'Total',
     headerName: 'Total',
     type: 'number',
-    width: 150,
+    width: 100,
     editable: true,
   },
   {
     field: 'BeneficeArticle',
     headerName: 'Benefice Article',
     type: 'number',
-    width: 150,
+    width: 100,
     editable: true,
   },
   {
@@ -156,7 +156,7 @@ export default function Vente() {
   };
 
   return (
-    <Box sx={{ height: 700, width: '90%', marginLeft: '5%', background: 'white', marginTop: '3%' }}>
+    <Box sx={{ height: 700, width: '90%', marginLeft: '4%', background: 'white', marginTop: '3%' }}>
       <Box>
         <AddIcon sx={{ cursor: 'pointer', marginLeft: '3%', marginTop: '2%' }} onClick={() => setOpenModal(true)} />
       </Box>

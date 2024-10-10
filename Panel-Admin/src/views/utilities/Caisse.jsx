@@ -15,38 +15,38 @@ const columns = [
   {
     field: 'CaisseDebut',
     headerName: 'Fond De Caisse',
-    width: 250,
+    width: 200,
     editable: true,
   },
   {
     field: 'CaisseFin',
     headerName: 'Caisse Fin de Jour',
-    width: 200,
+    width: 150,
     editable: true,
   },
   {
     field: 'BeneficeCaisse',
     headerName: 'Total Vente',
-    width: 200,
+    width: 150,
     editable: true,
   },
   {
     field: 'Ventesupposer',
     headerName: 'Vente supposer',
-    width: 200,
+    width: 150,
     editable: true,
   },
   {
     field: 'Depense',
     headerName: 'Depense',
-    width: 200,
+    width: 150,
     editable: true,
   },
   {
-    field: 'Created_at',
+    field: 'created_at',
     headerName: 'Date de Caisse',
     type: 'number',
-    width: 200,
+    width: 150,
     editable: true,
   },
 ];
@@ -68,6 +68,7 @@ export default function Vente() {
     try {
       const response = await axios.get('http://localhost:4000/Caisse/VenteSuposer');
       setTotalSales(response.data || 0);
+      console.log(response.data)
     } catch (err) {
       console.log(err);
     }
@@ -79,7 +80,7 @@ export default function Vente() {
       const data = response.data.map((row, index) => ({
         ...row,
         id: row.ID_Caisse || `id-${index}`,
-        Ventesupposer: totalSales.find(ts => ts.created_at === row.Created_at)?.NetSales || 0
+        Ventesupposer: totalSales.find(ts => ts.created_at === row.created_at)?.NetSales || 0
       }));
       setRows(data);
     } catch (err) {
@@ -176,17 +177,7 @@ export default function Vente() {
       <Dialog open={openModalCaisse} onClose={() => setOpenModalCaisse(false)}>
         <DialogTitle> Caisse Fin De Jour</DialogTitle>
         <DialogContent>
-          <TextField
-            label="ID Caisse"
-            name="ID_Caisee"
-            value={newCaisseFin.ID_Caisee}
-            variant="outlined"
-            fullWidth
-            sx={{ mb: 1, marginTop: '2%' }}
-            InputProps={{
-              readOnly: true,
-            }}
-          />
+          
           <TextField
             label="Caisse Fin"
             name="CaisseFin"
@@ -194,9 +185,8 @@ export default function Vente() {
             variant="outlined"
             fullWidth
             sx={{ mb: 1 }}
-            InputProps={{
-              readOnly: true, // Make CaisseFin read-only
-            }}
+            onChange={handleAvanceInputChange}
+
           />
           <TextField
             label="Depense"

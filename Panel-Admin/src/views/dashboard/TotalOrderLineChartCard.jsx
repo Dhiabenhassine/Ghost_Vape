@@ -43,7 +43,7 @@ const TotalOrderLineChartCard = ({ isLoading }) => {
           acc[curr.TypeLiquide] = curr.Count;
           return acc;
         }, {});
-        setData({ Gourmand: dataMap.Gourmand || 0, fruite: dataMap.fruite || 0 });
+        setData({ Gourmand: dataMap.Gourmand || 0, fruite: dataMap.Fruite || 0 });
       } catch (error) {
         console.error('Error fetching data:', error);
       }

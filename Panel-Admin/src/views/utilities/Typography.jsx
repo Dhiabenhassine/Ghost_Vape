@@ -172,7 +172,7 @@ function DataGridDemo() {
               sx={{ mb: 1 ,width:'80%'}}
 
             >
-              <MenuItem value="Fruite">Fruité</MenuItem>
+              <MenuItem value="Fruite">Fruite</MenuItem>
               <MenuItem value="Gourmand">Gourmand</MenuItem>
             </Select>
           </FormControl>

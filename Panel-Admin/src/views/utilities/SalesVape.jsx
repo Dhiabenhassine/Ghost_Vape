@@ -92,7 +92,7 @@ export default function Vente() {
   };
 
   return (
-    <Box sx={{ height: 700, width: '60%', marginLeft: '15%', background: 'white', marginTop: '3%' }}>
+    <Box sx={{ height: 700, width: '60%', marginLeft: '20%', background: 'white', marginTop: '3%' }}>
       <Box component="form" sx={{ display: 'flex', alignItems: 'center', '& > :not(style)': { m: 1 }}} noValidate autoComplete="off">
         <TextField
           id="search-field"
